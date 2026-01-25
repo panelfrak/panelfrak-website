@@ -1,0 +1,87 @@
+{{ define "main" }}
+<div class="container mx-auto px-4 py-12 max-w-4xl">
+    <h1 class="text-4xl font-bold mb-2 dark:text-cyan-300">{{ .Title }}</h1>
+    
+    {{ if .Description }}
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">{{ .Description }}</p>
+    {{ end }}
+
+    {{ $paginator := .Paginate .Pages }}
+
+    <div class="space-y-8 mb-12">
+        {{ range $paginator.Pages }}
+            <article class="pb-8 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                <div class="group">
+                    <h2 class="text-2xl font-bold mb-2 dark:text-cyan-300">
+                        <a href="{{ .RelPermalink }}" class="hover:underline dark:hover:text-cyan-200 transition">
+                            {{ .Title }}
+                        </a>
+                    </h2>
+
+                    <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        {{ if .Params.author }}
+                            <span class="flex items-center gap-2">
+                                <span class="font-semibold">By</span> {{ .Params.author }}
+                            </span>
+                        {{ end }}
+                        
+                        {{ if .Date }}
+                            <span class="flex items-center gap-2">
+                                <time datetime="{{ .Date.Format `2006-01-02T15:04:05Z07:00` }}">
+                                    {{ .Date.Format "January 2, 2006" }}
+                                </time>
+                            </span>
+                        {{ end }}
+                    </div>
+
+                    {{ if .Description }}
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ .Description }}</p>
+                    {{ else }}
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ .Summary }}</p>
+                    {{ end }}
+
+                    {{ if or .Params.categories .Params.tags }}
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {{ range .Params.categories }}
+                                <a href="{{ printf "/categories/%s" (. | lower) }}" class="inline-block px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded transition">
+                                    {{ . }}
+                                </a>
+                            {{ end }}
+                            
+                            {{ range .Params.tags }}
+                                <a href="{{ printf "/tags/%s" (. | lower) }}" class="inline-block px-2 py-1 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 rounded transition">
+                                    #{{ . }}
+                                </a>
+                            {{ end }}
+                        </div>
+                    {{ end }}
+
+                    <a href="{{ .RelPermalink }}" class="inline-block px-4 py-2 text-sm font-semibold text-white bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 dark:hover:bg-gray-600 rounded transition">
+                        Read More →
+                    </a>
+                </div>
+            </article>
+        {{ end }}
+    </div>
+
+    {{ if gt $paginator.TotalPages 1 }}
+        <nav class="flex justify-center items-center gap-4 py-8">
+            {{ if $paginator.HasPrev }}
+                <a href="{{ $paginator.Prev.URL }}" class="px-4 py-2 text-sm font-semibold bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                    ← Previous
+                </a>
+            {{ end }}
+
+            <div class="text-sm text-gray-600 dark:text-gray-400">
+                Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}
+            </div>
+
+            {{ if $paginator.HasNext }}
+                <a href="{{ $paginator.Next.URL }}" class="px-4 py-2 text-sm font-semibold bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                    Next →
+                </a>
+            {{ end }}
+        </nav>
+    {{ end }}
+</div>
+{{ end }}
