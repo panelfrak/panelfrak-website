@@ -5,6 +5,6 @@
 
 [context.production.environment]
   HUGO_ENV = "production"
-  HUGO_VERSION = "0.140.0" # Use a recent version
+  HUGO_VERSION = "0.153.1" # Use a recent version
   NODE_VERSION = "20"      # Tailwind v4 requires Node 18+
   GO_VERSION = "1.21"      # Required for Hugo Extended
