@@ -6,8 +6,7 @@ series: ''
 author: ''
 description: ''
 image: ''
-tags: []
-categories:
-  - Comic
+genre:
+- Comedy
 ---
 

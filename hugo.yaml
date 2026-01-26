@@ -21,6 +21,11 @@ markup:
 permalinks:
   posts: /posts/:year/:month/:title/
 
+taxonomies:
+  category: categories
+  tag: tags
+  genre: genres
+
 build:
   buildStats:
     enable: true
