@@ -4,7 +4,7 @@ title: PanelFRAK
 theme: panelfrak
 
 params:
-  owner: PT PanelFRAK Komikaloka Indonesia
+  owner: PanelFRAK Komikaloka Indonesia, a Loki company
   themeDefault: system
   social:
     facebook: https://www.facebook.com/panelfrak
@@ -20,10 +20,6 @@ markup:
 
 permalinks:
   posts: /posts/:year/:month/:title/
-
-taxonomies:
-  tag: tags
-  category: categories
 
 build:
   buildStats:
