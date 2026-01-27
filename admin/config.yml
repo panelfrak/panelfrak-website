@@ -8,8 +8,7 @@ backend:
   site_domain: precious-panda-b1eea2.netlify.app
   proxy_url: /.netlify/functions/git
 
-# Media files stored in Backblaze B2
-# Files are uploaded via custom function to B2
+# Media configuration - using relative paths that Hugo will convert to B2 URLs
 public_folder: /uploads
 media_folder: uploads
 
