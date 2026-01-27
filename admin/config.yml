@@ -2,10 +2,10 @@ backend:
   name: github
   repo: panelfrak/panelfrak-website
   branch: main
-  auth_endpoint: https://precious-panda-b1eea2.netlify.app/.netlify/functions/auth
+  base_url: https://precious-panda-b1eea2.netlify.app
+  auth_endpoint: /.netlify/functions/auth
   api_root: https://api.github.com
   site_domain: precious-panda-b1eea2.netlify.app
-  base_url: https://github.com
 
 media_library:
   name: s3
