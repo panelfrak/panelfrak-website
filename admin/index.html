@@ -3,8 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sveltia CMS</title>
+    <title>Sveltia CMS - PanelFRAK</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sveltia/cms@latest/dist/sveltia-cms.css">
+    <script>
+      // Custom media upload handler for Backblaze B2
+      window.addEventListener('load', () => {
+        // Override the default file input behavior
+        const originalCreateElement = document.createElement.bind(document);
+        document.createElement = function(tagName) {
+          const element = originalCreateElement(tagName);
+          
+          if (tagName.toLowerCase() === 'input' && element.type === 'file') {
+            element.addEventListener('change', async function(e) {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              
+              try {
+                // Generate a unique filename
+                const timestamp = Date.now();
+                const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+                const filename = `${timestamp}-${cleanName}`;
+                const path = `uploads/${filename}`;
+                
+                // Upload to B2 via Netlify function
+                const response = await fetch(`/.netlify/functions/s3/${path}`, {
+                  method: 'POST',
+                  body: await file.arrayBuffer(),
+                  headers: {
+                    'Content-Type': file.type,
+                  },
+                });
+                
+                if (!response.ok) {
+                  const error = await response.json();
+                  console.error('Upload failed:', error);
+                  alert('Upload failed: ' + (error.message || 'Unknown error'));
+                  return;
+                }
+                
+                const result = await response.json();
+                console.log('File uploaded successfully:', result.url);
+                
+              } catch (error) {
+                console.error('Upload error:', error);
+                alert('Upload error: ' + error.message);
+              }
+            });
+          }
+          
+          return element;
+        };
+      });
+    </script>
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/@sveltia/cms@latest/dist/sveltia-cms.js"></script>

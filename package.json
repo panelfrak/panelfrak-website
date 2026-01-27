@@ -7,7 +7,9 @@
     "tailwindcss": "^4.1.18",
     "@netlify/functions": "^2.1.0",
     "@octokit/rest": "^20.0.0",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "@aws-sdk/client-s3": "^3.709.0",
+    "@aws-sdk/s3-request-presigner": "^3.709.0"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",

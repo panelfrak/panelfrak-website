@@ -8,22 +8,10 @@ backend:
   site_domain: precious-panda-b1eea2.netlify.app
   proxy_url: /.netlify/functions/git
 
-media_library:
-  name: s3
-  config:
-    bucket: panelfrak-assets
-    region: auto
-    endpoint: https://s3.us-east-005.backblazeb2.com
-    access_key_id: 0058c16b0d498130000000001
-    secret_access_key: K005gNQF1/ZO+xjOFxIPEc6z7C0n1Fs
-    # For MinIO or other S3-compatible services:
-    # endpoint: https://minio.example.com:9000
-    # For DigitalOcean Spaces:
-    # endpoint: https://nyc3.digitaloceanspaces.com
-    # region: nyc3
-
-public_folder: /uploads
-media_folder: static/uploads
+# Media library - custom implementation for Backblaze B2
+# Uses Netlify function proxy for secure S3 uploads
+public_folder: https://f005.backblazeb2.com/file/panelfrak-assets
+media_folder: uploads
 
 # Locale configuration
 locale: en
@@ -74,7 +62,7 @@ collections:
       - {label: Series, name: series, widget: string}
       - {label: Author, name: author, widget: string}
       - {label: Description, name: description, widget: text}
-      - {label: Image, name: image, widget: image, required: false}
+      - {label: Image, name: image, widget: image, required: false, media_library: {config: {publicPath: "https://f005.backblazeb2.com/file/panelfrak-assets"}}}
       - {label: Genres, name: genre, widget: list, default: ['Comedy']}
       - {label: Body, name: body, widget: markdown}
 
@@ -93,7 +81,7 @@ collections:
             fields:
               - {label: Title, name: title, widget: string, required: true}
               - {label: Subtitle, name: subtitle, widget: string}
-              - {label: Image, name: image, widget: image, required: false}
+              - {label: Image, name: image, widget: image, required: false, media_library: {config: {publicPath: "https://f005.backblazeb2.com/file/panelfrak-assets"}}}
               - {label: Link, name: link, widget: string}
 
 # Display options
