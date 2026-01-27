@@ -25,6 +25,7 @@ taxonomies:
   category: categories
   tag: tags
   genre: genres
+  author: authors
 
 build:
   buildStats:
@@ -44,6 +45,8 @@ module:
       disableWatch: true
     - source: hugo_stats.json
       target: assets/notwatching/hugo_stats.json
+    - source: admin
+      target: static/admin
 
 menus:
   main:

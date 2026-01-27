@@ -2,6 +2,7 @@
   # This command ensures npm installs the CLI, then Hugo runs
   command = "npm install && hugo --gc --minify"
   publish = "public"
+  functions = "netlify/functions"
 
 [build.environment]
   HUGO_VERSION = "0.154.5" # Use a recent version

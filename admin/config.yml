@@ -1,0 +1,99 @@
+backend:
+  name: github
+  repo: panelfrak/panelfrak-website
+  branch: main
+  auth_endpoint: /.netlify/functions/auth
+  api_root: https://api.github.com
+  site_domain: precious-panda-b1eea2.netlify.app
+  base_url: https://github.com
+
+media_library:
+  name: s3
+  config:
+    bucket: panelfrak-assets
+    region: auto
+    endpoint: https://s3.us-east-005.backblazeb2.com
+    access_key_id: 0058c16b0d498130000000001
+    secret_access_key: K005gNQF1/ZO+xjOFxIPEc6z7C0n1Fs
+    # For MinIO or other S3-compatible services:
+    # endpoint: https://minio.example.com:9000
+    # For DigitalOcean Spaces:
+    # endpoint: https://nyc3.digitaloceanspaces.com
+    # region: nyc3
+
+public_folder: /uploads
+media_folder: static/uploads
+
+# Locale configuration
+locale: en
+
+# Collections
+collections:
+  # Pages Collection
+  - name: pages
+    label: Pages
+    folder: content
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    fields:
+      - {label: Title, name: title, widget: string, required: true}
+      - {label: Draft, name: draft, widget: boolean, default: false}
+      - {label: Date, name: date, widget: datetime}
+      - {label: Body, name: body, widget: markdown}
+
+  # Blog Posts Collection
+  - name: posts
+    label: Blog Posts
+    folder: content/posts
+    format: frontmatter
+    create: true
+    slug: '{{year}}{{month}}{{day}}-{{slug}}'
+    fields:
+      - {label: Title, name: title, widget: string, required: true}
+      - {label: Date, name: date, widget: datetime, required: true}
+      - {label: Draft, name: draft, widget: boolean, default: false}
+      - {label: Author, name: author, widget: string}
+      - {label: Description, name: description, widget: text}
+      - {label: Tags, name: tags, widget: list, default: []}
+      - {label: Categories, name: categories, widget: list, default: ['Blog']}
+      - {label: Body, name: body, widget: markdown}
+
+  # Works Collection
+  - name: works
+    label: Works
+    folder: content/works
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    fields:
+      - {label: Title, name: title, widget: string, required: true}
+      - {label: Date, name: date, widget: datetime, required: true}
+      - {label: Draft, name: draft, widget: boolean, default: false}
+      - {label: Series, name: series, widget: string}
+      - {label: Author, name: author, widget: string}
+      - {label: Description, name: description, widget: text}
+      - {label: Image, name: image, widget: image, required: false}
+      - {label: Genres, name: genre, widget: list, default: ['Comedy']}
+      - {label: Body, name: body, widget: markdown}
+
+  # Hero Data Collection (YAML)
+  - name: hero
+    label: Hero Section
+    files:
+      - name: hero
+        label: Hero Data
+        file: data/hero.yaml
+        format: yaml
+        fields:
+          - label: Hero Items
+            name: items
+            widget: list
+            fields:
+              - {label: Title, name: title, widget: string, required: true}
+              - {label: Subtitle, name: subtitle, widget: string}
+              - {label: Image, name: image, widget: image, required: false}
+              - {label: Link, name: link, widget: string}
+
+# Display options
+display_url: https://precious-panda-b1eea2.netlify.app
