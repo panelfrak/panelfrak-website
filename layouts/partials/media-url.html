@@ -1,0 +1,7 @@
+{{- $url := . -}}
+{{- if hasPrefix $url "/uploads/" -}}
+  {{- $cdnURL := site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets" -}}
+  {{- $cdnURL }}{{ $url -}}
+{{- else -}}
+  {{- $url -}}
+{{- end -}}

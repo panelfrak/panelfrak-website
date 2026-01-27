@@ -44,6 +44,11 @@
                 const result = await response.json();
                 console.log('File uploaded successfully:', result.url);
                 
+                // Store the full B2 URL in a data attribute for the CMS to use
+                if (result.url) {
+                  e.target.setAttribute('data-b2-url', result.url);
+                }
+                
               } catch (error) {
                 console.error('Upload error:', error);
                 alert('Upload error: ' + error.message);

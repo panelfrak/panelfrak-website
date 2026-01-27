@@ -39,14 +39,25 @@ That's it! Once deployed, the CMS will automatically upload images to B2.
 1. **User selects image** in Sveltia CMS
 2. **File is sent** to `/.netlify/functions/s3` endpoint
 3. **Serverless function** uploads to B2 using your credentials (secure, not exposed to browser)
-4. **Public URL** is returned: `https://f005.backblazeb2.com/file/panelfrak-assets/uploads/[filename]`
-5. **URL is saved** in your content's frontmatter
+4. **Relative path saved** in frontmatter: `/uploads/[timestamp]-[filename]`
+5. **Hugo converts to full B2 URL** at build time using the `media-url.html` partial
+6. **Final URL** on website: `https://f005.backblazeb2.com/file/panelfrak-assets/uploads/[filename]`
+
+### Why This Approach?
+
+- Sveltia CMS doesn't support absolute URLs in `public_folder`
+- We save relative paths (`/uploads/...`) in content
+- Hugo template automatically converts to full B2 CDN URLs
+- Best of both worlds: clean content files + CDN delivery
 
 ## Files Created
 
 - `netlify/functions/s3.ts` - Serverless function that handles secure S3/B2 uploads
-- `admin/config.yml` - Updated to use B2 public URLs
+- `admin/config.yml` - Updated to use relative paths for media
 - `admin/index.html` - Enhanced with upload handler
+- `themes/panelfrak/layouts/partials/media-url.html` - Converts relative paths to B2 CDN URLs
+- `themes/panelfrak/layouts/index.html` - Updated to use media-url partial
+- `hugo.yaml` - Added `cdnURL` parameter
 - `package.json` - Added AWS SDK dependencies
 
 ## Get Your B2 Credentials

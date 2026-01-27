@@ -8,9 +8,9 @@ backend:
   site_domain: precious-panda-b1eea2.netlify.app
   proxy_url: /.netlify/functions/git
 
-# Media library - custom implementation for Backblaze B2
-# Uses Netlify function proxy for secure S3 uploads
-public_folder: https://f005.backblazeb2.com/file/panelfrak-assets
+# Media files stored in Backblaze B2
+# Files are uploaded via custom function to B2
+public_folder: /uploads
 media_folder: uploads
 
 # Locale configuration

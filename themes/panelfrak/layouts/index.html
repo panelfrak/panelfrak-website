@@ -29,7 +29,11 @@
     <div id="hero-slider" class="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-cyan-400/30 shadow-lg h-[320px] md:h-[480px] bg-gray-50 dark:bg-gray-900">
         {{ range $index, $hero := . }}
             <a href="{{ $hero.link | relURL }}" class="absolute inset-0 transition-opacity duration-700 ease-in-out {{ if eq $index 0 }}opacity-100{{ else }}opacity-0 pointer-events-none{{ end }}" data-hero-index="{{ $index }}">
-                <img src="{{ $hero.image }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="lazy">
+                {{- $imgSrc := $hero.image -}}
+                {{- if and (hasPrefix $imgSrc "/uploads/") (not (or (hasPrefix $imgSrc "http://") (hasPrefix $imgSrc "https://"))) -}}
+                  {{- $imgSrc = printf "%s%s" (site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets") $imgSrc -}}
+                {{- end -}}
+                <img src="{{ $imgSrc }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col gap-2 text-white">
                     <span class="text-xs uppercase tracking-wide text-cyan-200">Linked feature</span>
@@ -58,7 +62,11 @@
             <article class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-cyan-400/30 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     {{ with .Params.image }}
-                        <img src="{{ . }}" alt="{{ $.Title }} cover" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" loading="lazy">
+                        {{- $imgSrc := . -}}
+                        {{- if and (hasPrefix $imgSrc "/uploads/") (not (or (hasPrefix $imgSrc "http://") (hasPrefix $imgSrc "https://"))) -}}
+                          {{- $imgSrc = printf "%s%s" (site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets") $imgSrc -}}
+                        {{- end -}}
+                        <img src="{{ $imgSrc }}" alt="{{ $.Title }} cover" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" loading="lazy">
                     {{ else }}
                         <div class="w-full h-full bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/40 dark:to-blue-900/30"></div>
                     {{ end }}

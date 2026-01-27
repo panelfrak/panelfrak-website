@@ -44,7 +44,8 @@ git push
 3. Click the image widget
 4. Select a file from your computer
 5. File uploads automatically to B2!
-6. Public URL is inserted: `https://f005.backblazeb2.com/file/panelfrak-assets/uploads/[filename]`
+6. Relative path is saved: `/uploads/[timestamp]-[filename]`
+7. Hugo converts to full B2 URL at build time
 
 ## 🔍 Where to Get B2 Credentials
 

@@ -6,6 +6,8 @@ theme: panelfrak
 params:
   owner: PanelFRAK Komikaloka Indonesia, a Loki company
   themeDefault: system
+  # Backblaze B2 CDN URL for uploaded media
+  cdnURL: https://f005.backblazeb2.com/file/panelfrak-assets
   social:
     facebook: https://www.facebook.com/panelfrak
     instagram: https://www.instagram.com/panelfrak
