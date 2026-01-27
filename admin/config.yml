@@ -6,6 +6,7 @@ backend:
   auth_endpoint: /.netlify/functions/auth
   api_root: https://api.github.com
   site_domain: precious-panda-b1eea2.netlify.app
+  proxy_url: /.netlify/functions/git
 
 media_library:
   name: s3
