@@ -3,11 +3,6 @@ languageCode: en-us
 title: PanelFRAK
 theme: panelfrak
 
-# Image processing - rewrite /uploads/* to B2 CDN
-mediaTypes:
-  uploads/*:
-    suffixes: ["jpg", "jpeg", "png", "gif", "webp", "svg"]
-
 params:
   owner: PanelFRAK Komikaloka Indonesia, a Loki company
   themeDefault: system
