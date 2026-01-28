@@ -26,6 +26,8 @@ taxonomies:
   tag: tags
   genre: genres
   author: authors
+  illustrator: illustrators
+  series: series
 
 build:
   buildStats:
