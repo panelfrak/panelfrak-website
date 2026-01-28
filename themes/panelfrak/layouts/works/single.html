@@ -34,27 +34,37 @@
             </section>
             {{ end }}
 
-            {{ $author := .Params.author }}
-            {{ if $author }}
-            {{ $authors := $author }}
+            {{ $authorTerms := .GetTerms "author" }}
+            {{ $authorParams := .Params.authors }}
+            {{ if or $authorTerms $authorParams }}
             <section class="space-y-2">
                 <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Author</h2>
                 <div class="flex flex-wrap gap-2">
-                    {{ range $authors }}
-                    <a class="rounded-full border border-cyan-200 px-3 py-1 text-sm font-semibold text-cyan-800 transition hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-700 dark:border-cyan-400/40 dark:text-cyan-100 dark:hover:border-cyan-300 dark:hover:text-cyan-50" href="{{ printf "/authors/%s/" (urlize .) | relURL }}">{{ . }}</a>
+                    {{ range $authorTerms }}
+                    <a class="rounded-full border border-cyan-200 px-3 py-1 text-sm font-semibold text-cyan-800 transition hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-700 dark:border-cyan-400/40 dark:text-cyan-100 dark:hover:border-cyan-300 dark:hover:text-cyan-50" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+                    {{ end }}
+                    {{ if not $authorTerms }}
+                        {{ range $authorParams }}
+                        <a class="rounded-full border border-cyan-200 px-3 py-1 text-sm font-semibold text-cyan-800 transition hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-700 dark:border-cyan-400/40 dark:text-cyan-100 dark:hover:border-cyan-300 dark:hover:text-cyan-50" href="{{ printf "/authors/%s/" (urlize .) | relURL }}">{{ . }}</a>
+                        {{ end }}
                     {{ end }}
                 </div>
             </section>
             {{ end }}
 
-            {{ $illustrator := .Params.illustrator }}
-            {{ if $illustrator }}
-            {{ $illustrators := $illustrator }}
+            {{ $illustratorTerms := .GetTerms "illustrator" }}
+            {{ $illustratorParams := .Params.illustrators }}
+            {{ if or $illustratorTerms $illustratorParams }}
             <section class="space-y-2">
                 <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Illustrator</h2>
                 <div class="flex flex-wrap gap-2">
-                    {{ range $illustrators }}
-                    <a class="rounded-full border border-purple-200 px-3 py-1 text-sm font-semibold text-purple-800 transition hover:-translate-y-0.5 hover:border-purple-300 hover:text-purple-700 dark:border-purple-300/40 dark:text-purple-100 dark:hover:border-purple-200 dark:hover:text-purple-50" href="{{ printf "/illustrators/%s/" (urlize .) | relURL }}">{{ . }}</a>
+                    {{ range $illustratorTerms }}
+                    <a class="rounded-full border border-purple-200 px-3 py-1 text-sm font-semibold text-purple-800 transition hover:-translate-y-0.5 hover:border-purple-300 hover:text-purple-700 dark:border-purple-300/40 dark:text-purple-100 dark:hover:border-purple-200 dark:hover:text-purple-50" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+                    {{ end }}
+                    {{ if not $illustratorTerms }}
+                        {{ range $illustratorParams }}
+                        <a class="rounded-full border border-purple-200 px-3 py-1 text-sm font-semibold text-purple-800 transition hover:-translate-y-0.5 hover:border-purple-300 hover:text-purple-700 dark:border-purple-300/40 dark:text-purple-100 dark:hover:border-purple-200 dark:hover:text-purple-50" href="{{ printf "/illustrators/%s/" (urlize .) | relURL }}">{{ . }}</a>
+                        {{ end }}
                     {{ end }}
                 </div>
             </section>

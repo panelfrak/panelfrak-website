@@ -3,8 +3,8 @@ date: '{{ now.Format "2006-01-02" }}'
 draft: false
 title: '{{ replace .File.ContentBaseName "-" " " | title }}'
 series: []
-author: []
-illustrator: []
+authors: []
+illustrators: []
 description: ''
 image: ''
 links:

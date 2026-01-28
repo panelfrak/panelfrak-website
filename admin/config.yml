@@ -73,13 +73,13 @@ collections:
         default: []
         summary: '{{fields.item}}'
       - label: Author
-        name: author
+        name: authors
         widget: list
         required: false
         default: []
         summary: '{{fields.item}}'
       - label: Illustrator
-        name: illustrator
+        name: illustrators
         widget: list
         required: false
         default: []
