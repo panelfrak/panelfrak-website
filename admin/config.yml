@@ -8,12 +8,9 @@ backend:
   site_domain: precious-panda-b1eea2.netlify.app
   proxy_url: /.netlify/functions/git
 
-# Media configuration - Cloudinary
-media_library:
-  name: cloudinary
-  config:
-    cloud_name: deqcwqufu
-    api_key: 382726476762586
+# Media configuration
+media_folder: "uploads"
+public_folder: "/uploads"
 
 # Locale configuration
 locale: en

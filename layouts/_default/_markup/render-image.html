@@ -1,6 +1,2 @@
 {{- $src := .Destination -}}
-{{- if hasPrefix $src "/uploads/" -}}
-  {{- $cdnURL := site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets" -}}
-  {{- $src = printf "%s%s" $cdnURL $src -}}
-{{- end -}}
-<img src="{{ $src }}" alt="{{ .Text }}" {{ with .Title }}title="{{ . }}"{{ end }} />
+<img src="{{ $src | safeURL }}" alt="{{ .Text }}" {{ with .Title }}title="{{ . }}"{{ end }} />
