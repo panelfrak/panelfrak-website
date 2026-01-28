@@ -1,6 +1,0 @@
-{{- $src := .Destination -}}
-{{- if and (hasPrefix $src "/uploads/") (not (or (hasPrefix $src "http://") (hasPrefix $src "https://"))) -}}
-  {{- $cdnURL := site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets" -}}
-  {{- $src = printf "%s%s" $cdnURL $src -}}
-{{- end -}}
-<img src="{{ $src }}" alt="{{ .Text }}" {{ with .Title }}title="{{ . }}"{{ end }} />
