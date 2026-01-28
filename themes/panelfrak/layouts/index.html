@@ -26,21 +26,40 @@
     </div>
 
     {{ with $heroes }}
-    <div id="hero-slider" class="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-cyan-400/30 shadow-lg h-[320px] md:h-[480px] bg-gray-50 dark:bg-gray-900">
-        {{ range $index, $hero := .items }}
-            <a href="{{ $hero.link | relURL }}" class="absolute inset-0 transition-opacity duration-700 ease-in-out {{ if eq $index 0 }}opacity-100{{ else }}opacity-0 pointer-events-none{{ end }}" data-hero-index="{{ $index }}">
-                {{- $imgSrc := $hero.image -}}
-                <img src="{{ $imgSrc }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col gap-2 text-white">
-                    <span class="text-xs uppercase tracking-wide text-cyan-200">Linked feature</span>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <h2 class="text-2xl md:text-3xl font-semibold">{{ $hero.title }}</h2>
-                        {{ with $hero.subtitle }}<span class="text-sm px-3 py-1 rounded-full bg-white/15 backdrop-blur">{{ . }}</span>{{ end }}
+    <div id="hero-carousel" class="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-cyan-400/30 shadow-lg h-[400px] md:h-[560px] bg-gray-50 dark:bg-gray-900" role="region" aria-roledescription="carousel" aria-label="Featured content carousel">
+        <div class="carousel-track relative h-full">
+            {{ range $index, $hero := .items }}
+            <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out {{ if eq $index 0 }}opacity-100{{ else }}opacity-0{{ end }}" 
+                 data-slide-index="{{ $index }}"
+                 role="group"
+                 aria-roledescription="slide"
+                 aria-label="Slide {{ add $index 1 }} of {{ len $heroes.items }}">
+                <a href="{{ $hero.link | relURL }}" class="block h-full w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900" tabindex="{{ if eq $index 0 }}0{{ else }}-1{{ end }}">
+                    {{- $imgSrc := $hero.image -}}
+                    <img src="{{ $imgSrc }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="{{ if eq $index 0 }}eager{{ else }}lazy{{ end }}">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 flex flex-col gap-3 text-white">
+                        <h2 class="text-3xl md:text-4xl font-bold drop-shadow-lg">{{ $hero.title }}</h2>
+                        {{ with $hero.subtitle }}<span class="text-sm md:text-base px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 w-fit">{{ . }}</span>{{ end }}
                     </div>
-                </div>
-            </a>
-        {{ end }}
+                </a>
+            </div>
+            {{ end }}
+        </div>
+        
+        <!-- Progress indicators -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10" role="tablist" aria-label="Carousel slides">
+            {{ range $index, $hero := .items }}
+            <button type="button" 
+                    class="carousel-indicator w-2 h-2 rounded-full transition-all duration-300 {{ if eq $index 0 }}bg-white w-8{{ else }}bg-white/50 hover:bg-white/75{{ end }}"
+                    data-slide-to="{{ $index }}"
+                    role="tab"
+                    aria-label="Go to slide {{ add $index 1 }}"
+                    aria-selected="{{ if eq $index 0 }}true{{ else }}false{{ end }}"
+                    aria-controls="carousel-slide-{{ $index }}">
+            </button>
+            {{ end }}
+        </div>
     </div>
     {{ end }}
 </section>
@@ -142,46 +161,221 @@
 {{ end }}
 
 <script>
-(function(){
-    const slider = document.getElementById('hero-slider');
-    if (!slider) return;
-    const slides = Array.from(slider.querySelectorAll('[data-hero-index]'));
-    if (slides.length === 0) return;
-    let index = 0;
-    let paused = false;
-    let timer = null;
-
-    const show = (i) => {
-        index = (i + slides.length) % slides.length;
-        slides.forEach((el, idx) => {
-            const active = idx === index;
-            el.classList.toggle('opacity-100', active);
-            el.classList.toggle('opacity-0', !active);
-            el.classList.toggle('pointer-events-none', !active);
-        });
-    };
-
-    const next = () => show(index + 1);
-    const prev = () => show(index - 1);
-
-    const toggleBtn = document.querySelector('[data-hero-toggle]');
-    const label = document.querySelector('[data-hero-toggle-label]');
-    const updateLabel = () => { if (label) { label.textContent = paused ? 'Resume autoplay' : 'Pause autoplay'; } };
-
-    const start = () => {
-        if (timer) clearInterval(timer);
-        timer = setInterval(() => { if (!paused && slides.length > 1) { next(); } }, 5000);
-    };
-
-    document.querySelector('[data-hero-next]')?.addEventListener('click', () => { paused = true; updateLabel(); next(); });
-    document.querySelector('[data-hero-prev]')?.addEventListener('click', () => { paused = true; updateLabel(); prev(); });
-    toggleBtn?.addEventListener('click', () => { paused = !paused; updateLabel(); });
-
-    slider.addEventListener('mouseenter', () => { paused = true; updateLabel(); });
-    slider.addEventListener('mouseleave', () => { paused = false; updateLabel(); });
-
-    updateLabel();
-    start();
+(function() {
+    'use strict';
+    
+    // Hero Carousel Module
+    class HeroCarousel {
+        constructor(element) {
+            this.carousel = element;
+            this.slides = Array.from(element.querySelectorAll('.carousel-slide'));
+            this.indicators = Array.from(element.querySelectorAll('.carousel-indicator'));
+            this.prevBtn = document.querySelector('[data-hero-prev]');
+            this.nextBtn = document.querySelector('[data-hero-next]');
+            this.toggleBtn = document.querySelector('[data-hero-toggle]');
+            this.toggleLabel = document.querySelector('[data-hero-toggle-label]');
+            
+            this.currentIndex = 0;
+            this.isPaused = false;
+            this.autoplayInterval = null;
+            this.autoplayDelay = 6000;
+            this.touchStartX = 0;
+            this.touchEndX = 0;
+            
+            if (this.slides.length <= 1) return;
+            
+            this.init();
+        }
+        
+        init() {
+            this.setupEventListeners();
+            this.startAutoplay();
+            this.updateToggleLabel();
+        }
+        
+        setupEventListeners() {
+            // Navigation buttons
+            this.prevBtn?.addEventListener('click', () => this.goToPrevious());
+            this.nextBtn?.addEventListener('click', () => this.goToNext());
+            this.toggleBtn?.addEventListener('click', () => this.toggleAutoplay());
+            
+            // Indicator dots
+            this.indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => this.goToSlide(index));
+            });
+            
+            // Keyboard navigation
+            this.carousel.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            
+            // Pause on hover
+            this.carousel.addEventListener('mouseenter', () => this.pause());
+            this.carousel.addEventListener('mouseleave', () => this.resume());
+            
+            // Touch/swipe support
+            this.carousel.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
+            this.carousel.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: true });
+            
+            // Pause when visibility changes
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    this.pause();
+                } else if (!this.isPaused) {
+                    this.resume();
+                }
+            });
+        }
+        
+        goToSlide(index, direction = 'auto') {
+            if (index === this.currentIndex || index < 0 || index >= this.slides.length) return;
+            
+            const prevIndex = this.currentIndex;
+            this.currentIndex = index;
+            
+            // Update slides
+            this.slides.forEach((slide, i) => {
+                const link = slide.querySelector('a');
+                
+                if (i === this.currentIndex) {
+                    // Incoming slide
+                    slide.classList.remove('opacity-0');
+                    slide.classList.add('opacity-100');
+                    if (link) link.tabIndex = 0;
+                } else {
+                    // Hidden/outgoing slides
+                    slide.classList.remove('opacity-100');
+                    slide.classList.add('opacity-0');
+                    if (link) link.tabIndex = -1;
+                }
+            });
+            
+            // Update indicators
+            this.indicators.forEach((indicator, i) => {
+                const isActive = i === this.currentIndex;
+                indicator.classList.toggle('bg-white', isActive);
+                indicator.classList.toggle('w-8', isActive);
+                indicator.classList.toggle('bg-white/50', !isActive);
+                indicator.setAttribute('aria-selected', isActive);
+            });
+            
+            // Announce to screen readers
+            this.announceSlideChange();
+        }
+        
+        goToNext() {
+            this.pauseAutoplay();
+            this.goToSlide((this.currentIndex + 1) % this.slides.length, 'next');
+        }
+        
+        goToPrevious() {
+            this.pauseAutoplay();
+            this.goToSlide((this.currentIndex - 1 + this.slides.length) % this.slides.length, 'prev');
+        }
+        
+        handleKeyboard(e) {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    this.goToPrevious();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    this.goToNext();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    this.goToSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    this.goToSlide(this.slides.length - 1);
+                    break;
+            }
+        }
+        
+        handleTouchStart(e) {
+            this.touchStartX = e.changedTouches[0].screenX;
+        }
+        
+        handleTouchEnd(e) {
+            this.touchEndX = e.changedTouches[0].screenX;
+            this.handleSwipe();
+        }
+        
+        handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = this.touchStartX - this.touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    this.goToNext();
+                } else {
+                    this.goToPrevious();
+                }
+            }
+        }
+        
+        startAutoplay() {
+            if (this.autoplayInterval) return;
+            this.autoplayInterval = setInterval(() => {
+                if (!this.isPaused) {
+                    this.goToSlide((this.currentIndex + 1) % this.slides.length, 'next');
+                }
+            }, this.autoplayDelay);
+        }
+        
+        stopAutoplay() {
+            if (this.autoplayInterval) {
+                clearInterval(this.autoplayInterval);
+                this.autoplayInterval = null;
+            }
+        }
+        
+        pause() {
+            this.isPaused = true;
+            this.updateToggleLabel();
+        }
+        
+        resume() {
+            this.isPaused = false;
+            this.updateToggleLabel();
+        }
+        
+        pauseAutoplay() {
+            this.isPaused = true;
+            this.updateToggleLabel();
+        }
+        
+        toggleAutoplay() {
+            this.isPaused = !this.isPaused;
+            this.updateToggleLabel();
+        }
+        
+        updateToggleLabel() {
+            if (this.toggleLabel) {
+                this.toggleLabel.textContent = this.isPaused ? 'Resume autoplay' : 'Pause autoplay';
+            }
+        }
+        
+        announceSlideChange() {
+            // Create or update live region for screen reader announcements
+            let liveRegion = document.getElementById('carousel-live-region');
+            if (!liveRegion) {
+                liveRegion = document.createElement('div');
+                liveRegion.id = 'carousel-live-region';
+                liveRegion.className = 'sr-only';
+                liveRegion.setAttribute('aria-live', 'polite');
+                liveRegion.setAttribute('aria-atomic', 'true');
+                document.body.appendChild(liveRegion);
+            }
+            liveRegion.textContent = `Slide ${this.currentIndex + 1} of ${this.slides.length}`;
+        }
+    }
+    
+    // Initialize carousel when DOM is ready
+    const carousel = document.getElementById('hero-carousel');
+    if (carousel) {
+        new HeroCarousel(carousel);
+    }
 })();
 </script>
 {{ end }}
