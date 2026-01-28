@@ -42,7 +42,6 @@ collections:
       - {label: Date, name: date, widget: datetime, required: true, default: now, format: 'YYYY-MM-DDTHH:mm:ssZ'}
       - {label: Draft, name: draft, widget: boolean, default: false}
       - {label: Author, name: author, widget: string}
-      - {label: Description, name: description, widget: text}
       - {label: Tags, name: tags, widget: list, default: []}
       - {label: Categories, name: categories, widget: list, default: ['Blog']}
       - {label: Body, name: body, widget: markdown}
@@ -60,7 +59,7 @@ collections:
       - {label: Draft, name: draft, widget: boolean, default: false}
       - {label: Series, name: series, widget: string}
       - {label: Author, name: author, widget: string}
-      - {label: Description, name: description, widget: text}
+      - {label: Description, name: description, widget: text, required: false}
       - {label: Image, name: image, widget: image, required: false}
       - {label: Genres, name: genre, widget: list, default: ['Comedy']}
       - {label: Body, name: body, widget: markdown}

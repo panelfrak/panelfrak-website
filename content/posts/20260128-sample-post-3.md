@@ -3,7 +3,6 @@ title: Sample post 3
 date: '2026-01-28T08:09:00+07:00'
 draft: false
 author: PanelFRAK Admin
-description: Another sample post
 tags:
   - hello
 categories:

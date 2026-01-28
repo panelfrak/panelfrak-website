@@ -29,11 +29,7 @@
     <div id="hero-slider" class="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-cyan-400/30 shadow-lg h-[320px] md:h-[480px] bg-gray-50 dark:bg-gray-900">
         {{ range $index, $hero := .items }}
             <a href="{{ $hero.link | relURL }}" class="absolute inset-0 transition-opacity duration-700 ease-in-out {{ if eq $index 0 }}opacity-100{{ else }}opacity-0 pointer-events-none{{ end }}" data-hero-index="{{ $index }}">
-                {{- $imgSrc := $hero.image -}}
-                {{- if and (hasPrefix $imgSrc "/uploads/") (not (or (hasPrefix $imgSrc "http://") (hasPrefix $imgSrc "https://"))) -}}
-                  {{- $imgSrc = printf "%s%s" (site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets") $imgSrc -}}
-                {{- end -}}
-                <img src="{{ $imgSrc }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="lazy">
+                <img src="{{ $hero.image }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col gap-2 text-white">
                     <span class="text-xs uppercase tracking-wide text-cyan-200">Linked feature</span>
@@ -62,11 +58,7 @@
             <article class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-cyan-400/30 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     {{ with .Params.image }}
-                        {{- $imgSrc := . -}}
-                        {{- if and (hasPrefix $imgSrc "/uploads/") (not (or (hasPrefix $imgSrc "http://") (hasPrefix $imgSrc "https://"))) -}}
-                          {{- $imgSrc = printf "%s%s" (site.Params.cdnURL | default "https://f005.backblazeb2.com/file/panelfrak-assets") $imgSrc -}}
-                        {{- end -}}
-                        <img src="{{ $imgSrc }}" alt="{{ $.Title }} cover" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" loading="lazy">
+                        <img src="{{ . }}" alt="{{ $.Title }} cover" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" loading="lazy">
                     {{ else }}
                         <div class="w-full h-full bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/40 dark:to-blue-900/30"></div>
                     {{ end }}
@@ -108,6 +100,7 @@
     {{ if $posts }}
         <div class="grid gap-6 md:grid-cols-3">
             {{ range $posts }}
+            {{ $desc := (.Params.description | default .Description | default "" ) | plainify | truncate 140 }}
             <article class="h-full flex flex-col gap-3 p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-cyan-400/30 shadow-sm">
                 <div class="text-sm text-gray-500 dark:text-gray-300 flex items-center justify-between">
                     <span>{{ .Date.Format "Jan 2, 2006" }}</span>
@@ -116,7 +109,7 @@
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-cyan-100">
                     <a href="{{ .RelPermalink }}" class="hover:text-cyan-600 dark:hover:text-cyan-200 transition">{{ .Title }}</a>
                 </h3>
-                <p class="text-sm text-gray-700 dark:text-gray-200/90 leading-relaxed">{{ .Summary | plainify | truncate 140 }}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-200/90 leading-relaxed">{{ if $desc }}{{ $desc }}{{ else }}{{ .Summary | plainify | truncate 140 }}{{ end }}</p>
                 <a href="{{ .RelPermalink }}" class="inline-flex items-center gap-2 text-cyan-700 dark:text-cyan-100 hover:underline">Read article
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="m9 5 7 7-7 7"/></svg>
                 </a>

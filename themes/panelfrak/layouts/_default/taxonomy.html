@@ -56,10 +56,10 @@
                         {{ end }}
                     </div>
 
-                    {{ if .Description }}
-                        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ .Description }}</p>
-                    {{ else }}
+                    {{ if eq .Section "posts" }}
                         <p class="text-gray-700 dark:text-gray-300 mb-4">{{ .Summary }}</p>
+                    {{ else }}
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ with .Description }}{{ . }}{{ else }}{{ .Summary }}{{ end }}</p>
                     {{ end }}
 
                     {{ if or .Params.categories .Params.tags }}
