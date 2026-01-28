@@ -10,7 +10,7 @@ illustrators:
   - Skyline Sketch Unit
 description: 'A rooftop courier ride across maglev cables where memory chips, drone cameras, and a rival racer turn every delivery into a live-streamed sprint packed with chat emotes.'
 image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80'
-genre:
+genres:
   - Comedy
   - Sci-Fi
 links:

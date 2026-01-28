@@ -10,7 +10,7 @@ illustrators:
   - Sample Illustrator
 description: 'A lightweight placeholder showcasing how works entries render with the new sidebar metadata.'
 image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1600&q=80'
-genre:
+genres:
   - Comedy
   - Demo
 links:

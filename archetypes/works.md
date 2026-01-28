@@ -12,6 +12,6 @@ links:
   link: 'https://www.shopee.co.id/'
 - ref: 'GlobalComix'
   link: 'https://www.globalcomix.com/'
-genre:
+genres:
 - Comedy
 ---

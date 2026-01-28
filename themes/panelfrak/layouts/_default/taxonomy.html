@@ -110,34 +110,20 @@
     <!-- Related Taxonomies Links -->
     <section class="mt-16 pt-8 border-t border-gray-300 dark:border-gray-700">
         <h3 class="text-lg font-semibold mb-6 dark:text-cyan-300">Other {{ humanize .Data.Plural }}</h3>
-        
-        {{ $currentTitle := .Title }}
-        {{ if eq .Data.Singular "tag" }}
-            {{ $taxonomy := .Site.Taxonomies.tags }}
-            {{ if $taxonomy }}
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {{ range $name, $items := $taxonomy }}
-                        {{ if ne $name $currentTitle }}
-                            <a href="{{ ($.Site.GetPage (printf "taxonomy.tags.%s" $name)).RelPermalink }}" class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                                #{{ $name }} <span class="text-xs ml-1">({{ len $items }})</span>
+
+        {{ $taxonomy := index .Site.Taxonomies .Section }}
+        {{ if $taxonomy }}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {{ range $name, $items := $taxonomy }}
+                    {{ with $items.Page }}
+                        {{ if ne .RelPermalink $.RelPermalink }}
+                            <a href="{{ .RelPermalink }}" class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                                {{ if eq $.Data.Singular "tag" }}#{{ end }}{{ $name }} <span class="text-xs ml-1">({{ len $items }})</span>
                             </a>
                         {{ end }}
                     {{ end }}
-                </div>
-            {{ end }}
-        {{ else if eq .Data.Singular "category" }}
-            {{ $taxonomy := .Site.Taxonomies.categories }}
-            {{ if $taxonomy }}
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {{ range $name, $items := $taxonomy }}
-                        {{ if ne $name $currentTitle }}
-                            <a href="{{ ($.Site.GetPage (printf "taxonomy.categories.%s" $name)).RelPermalink }}" class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                                {{ $name }} <span class="text-xs ml-1">({{ len $items }})</span>
-                            </a>
-                        {{ end }}
-                    {{ end }}
-                </div>
-            {{ end }}
+                {{ end }}
+            </div>
         {{ end }}
     </section>
 </div>
