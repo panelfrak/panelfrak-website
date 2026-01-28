@@ -37,4 +37,3 @@ Jakarta Timur 13130<br>
 Indonesia<br>
 Email us at [panelfrak@gmail.com](mailto:panelfrak@gmail.com)<br>
 WhatsApp us at [+62 851-6182-1874](https://wa.me/6285161821874)<br>
-*Please do not submit unsolicited proposals (we do not accept them)*
