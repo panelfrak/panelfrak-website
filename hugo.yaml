@@ -1,10 +1,10 @@
-baseURL: https://precious-panda-b1eea2.netlify.app/
+baseURL: https://comics.lokifrak.com/
 languageCode: en-us
 title: PanelFRAK
 theme: panelfrak
 
 params:
-  owner: PanelFRAK Komikaloka Indonesia, a Loki company
+  owner: PanelFRAK Komikaloka Indonesia, a LokiFRAK company
   themeDefault: system
   social:
     facebook: https://www.facebook.com/panelfrak
