@@ -2,10 +2,10 @@ backend:
   name: github
   repo: panelfrak/panelfrak-website
   branch: main
-  base_url: https://precious-panda-b1eea2.netlify.app
+  base_url: https://comics.lokifrak.com/
   auth_endpoint: /.netlify/functions/auth
   api_root: https://api.github.com
-  site_domain: precious-panda-b1eea2.netlify.app
+  site_domain: comics.lokifrak.com
   proxy_url: /.netlify/functions/git
 
 # Media configuration
