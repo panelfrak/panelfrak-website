@@ -27,22 +27,30 @@
 
     {{ with $heroes }}
     <div id="hero-carousel" class="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-cyan-400/30 shadow-lg h-[400px] md:h-[560px] bg-gray-50 dark:bg-gray-900" role="region" aria-roledescription="carousel" aria-label="Featured content carousel">
-        <div class="carousel-track relative h-full">
+        <div class="carousel-track flex h-full transition-transform duration-700 ease-in-out" style="transform: translateX(0%);">
             {{ range $index, $hero := .items }}
-            <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out {{ if eq $index 0 }}opacity-100{{ else }}opacity-0{{ end }}" 
+            {{- $heroLink := $hero.link | default "#" -}}
+            {{- $heroHref := cond (or (eq $heroLink "#") (strings.HasPrefix $heroLink "#")) $heroLink ($heroLink | relURL) -}}
+            <div class="carousel-slide flex-shrink-0 w-full h-full relative" 
                  data-slide-index="{{ $index }}"
                  role="group"
                  aria-roledescription="slide"
                  aria-label="Slide {{ add $index 1 }} of {{ len $heroes.items }}">
-                <a href="{{ $hero.link | relURL }}" class="block h-full w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900" tabindex="{{ if eq $index 0 }}0{{ else }}-1{{ end }}">
-                    {{- $imgSrc := $hero.image -}}
-                    <img src="{{ $imgSrc }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="{{ if eq $index 0 }}eager{{ else }}lazy{{ end }}">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 flex flex-col gap-3 text-white">
-                        <h2 class="text-3xl md:text-4xl font-bold drop-shadow-lg">{{ $hero.title }}</h2>
-                        {{ with $hero.subtitle }}<span class="text-sm md:text-base px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 w-fit">{{ . }}</span>{{ end }}
+                {{ if ne $heroHref "#" }}
+                <a href="{{ $heroHref }}" class="block h-full w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-xl" tabindex="{{ if eq $index 0 }}0{{ else }}-1{{ end }}">
+                {{ end }}
+                    <div class="relative h-full w-full">
+                        {{- $imgSrc := $hero.image -}}
+                        <img src="{{ $imgSrc }}" alt="{{ $hero.title }}" class="w-full h-full object-cover" loading="{{ if eq $index 0 }}eager{{ else }}lazy{{ end }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 flex flex-col gap-3 text-white">
+                            <h2 class="text-3xl md:text-4xl font-bold drop-shadow-lg">{{ $hero.title }}</h2>
+                            {{ with $hero.subtitle }}<span class="text-sm md:text-base px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 w-fit">{{ . }}</span>{{ end }}
+                        </div>
                     </div>
+                {{ if ne $heroHref "#" }}
                 </a>
+                {{ end }}
             </div>
             {{ end }}
         </div>
@@ -168,6 +176,7 @@
     class HeroCarousel {
         constructor(element) {
             this.carousel = element;
+            this.track = element.querySelector('.carousel-track');
             this.slides = Array.from(element.querySelectorAll('.carousel-slide'));
             this.indicators = Array.from(element.querySelectorAll('.carousel-indicator'));
             this.prevBtn = document.querySelector('[data-hero-prev]');
@@ -181,6 +190,7 @@
             this.autoplayDelay = 6000;
             this.touchStartX = 0;
             this.touchEndX = 0;
+            this.isTransitioning = false;
             
             if (this.slides.length <= 1) return;
             
@@ -191,6 +201,7 @@
             this.setupEventListeners();
             this.startAutoplay();
             this.updateToggleLabel();
+            this.updateAccessibility();
         }
         
         setupEventListeners() {
@@ -223,52 +234,66 @@
                     this.resume();
                 }
             });
+            
+            // Handle transition end
+            this.track?.addEventListener('transitionend', () => {
+                this.isTransitioning = false;
+            });
         }
         
-        goToSlide(index, direction = 'auto') {
-            if (index === this.currentIndex || index < 0 || index >= this.slides.length) return;
+        goToSlide(index) {
+            if (this.isTransitioning || index === this.currentIndex || index < 0 || index >= this.slides.length) return;
             
-            const prevIndex = this.currentIndex;
+            this.isTransitioning = true;
             this.currentIndex = index;
             
-            // Update slides
-            this.slides.forEach((slide, i) => {
-                const link = slide.querySelector('a');
-                
-                if (i === this.currentIndex) {
-                    // Incoming slide
-                    slide.classList.remove('opacity-0');
-                    slide.classList.add('opacity-100');
-                    if (link) link.tabIndex = 0;
-                } else {
-                    // Hidden/outgoing slides
-                    slide.classList.remove('opacity-100');
-                    slide.classList.add('opacity-0');
-                    if (link) link.tabIndex = -1;
-                }
-            });
+            // Calculate transform percentage
+            const translateX = -this.currentIndex * 100;
+            if (this.track) {
+                this.track.style.transform = `translateX(${translateX}%)`;
+            }
             
             // Update indicators
-            this.indicators.forEach((indicator, i) => {
-                const isActive = i === this.currentIndex;
-                indicator.classList.toggle('bg-white', isActive);
-                indicator.classList.toggle('w-8', isActive);
-                indicator.classList.toggle('bg-white/50', !isActive);
-                indicator.setAttribute('aria-selected', isActive);
-            });
+            this.updateIndicators();
+            
+            // Update accessibility
+            this.updateAccessibility();
             
             // Announce to screen readers
             this.announceSlideChange();
         }
         
+        updateIndicators() {
+            this.indicators.forEach((indicator, i) => {
+                const isActive = i === this.currentIndex;
+                indicator.classList.toggle('bg-white', isActive);
+                indicator.classList.toggle('w-8', isActive);
+                indicator.classList.toggle('bg-white/50', !isActive);
+                indicator.setAttribute('aria-selected', isActive.toString());
+            });
+        }
+        
+        updateAccessibility() {
+            this.slides.forEach((slide, i) => {
+                const link = slide.querySelector('a');
+                const isActive = i === this.currentIndex;
+                
+                if (link) {
+                    link.tabIndex = isActive ? 0 : -1;
+                }
+            });
+        }
+        
         goToNext() {
             this.pauseAutoplay();
-            this.goToSlide((this.currentIndex + 1) % this.slides.length, 'next');
+            const nextIndex = (this.currentIndex + 1) % this.slides.length;
+            this.goToSlide(nextIndex);
         }
         
         goToPrevious() {
             this.pauseAutoplay();
-            this.goToSlide((this.currentIndex - 1 + this.slides.length) % this.slides.length, 'prev');
+            const prevIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+            this.goToSlide(prevIndex);
         }
         
         handleKeyboard(e) {
@@ -318,7 +343,7 @@
             if (this.autoplayInterval) return;
             this.autoplayInterval = setInterval(() => {
                 if (!this.isPaused) {
-                    this.goToSlide((this.currentIndex + 1) % this.slides.length, 'next');
+                    this.goToNext();
                 }
             }, this.autoplayDelay);
         }
